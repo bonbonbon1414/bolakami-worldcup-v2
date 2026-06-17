@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0b0f14;
+  --surface: #111821;
+  --surface-2: #1a2330;
+  --border: #243042;
+  --foreground: #e7eef7;
+  --muted: #aab8cc;
+  --primary: #10b981;
+  --primary-hover: #34d399;
+  /* Brighter green tuned for inline text links on dark surfaces */
+  --link: #4ade80;
+  --accent: #f59e0b;
+  --danger: #ef4444;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-link: var(--link);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-mont);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family: var(--font-mont), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Article prose */
+.prose-article {
+  color: var(--foreground);
+  line-height: 1.75;
+  font-size: 1.0625rem;
+}
+.prose-article h1,
+.prose-article h2,
+.prose-article h3,
+.prose-article h4 {
+  color: #fff;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+.prose-article h2 {
+  font-size: 1.6rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.4rem;
+}
+.prose-article h3 {
+  font-size: 1.25rem;
+}
+.prose-article p {
+  margin: 1rem 0;
+}
+.prose-article a {
+  color: var(--primary-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-article a:hover {
+  color: var(--primary);
+}
+.prose-article ul,
+.prose-article ol {
+  margin: 1rem 0 1rem 1.25rem;
+}
+.prose-article ul {
+  list-style: disc;
+}
+.prose-article ol {
+  list-style: decimal;
+}
+.prose-article li {
+  margin: 0.4rem 0;
+}
+.prose-article blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 0.5rem 1rem;
+  margin: 1.25rem 0;
+  background: var(--surface);
+  color: var(--muted);
+  font-style: italic;
+  border-radius: 0 8px 8px 0;
+}
+.prose-article code {
+  background: var(--surface-2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: var(--font-geist-mono), monospace;
+}
+.prose-article pre {
+  background: #0a0f17;
+  border: 1px solid var(--border);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+}
+.prose-article pre code {
+  background: transparent;
+  padding: 0;
+}
+.prose-article img {
+  border-radius: 10px;
+  margin: 1.25rem 0;
+  max-width: 100%;
+  height: auto;
+}
+.prose-article hr {
+  border-color: var(--border);
+  margin: 2rem 0;
+}
+.prose-article table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.95rem;
+}
+.prose-article th,
+.prose-article td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose-article th {
+  background: var(--surface);
+  font-weight: 600;
+}
+
+/* Utility: live pulse dot */
+.live-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  background: var(--danger);
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: livePulse 1.6s infinite;
+}
+@keyframes livePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70%  { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Media frame: reserves space (aspect-ratio) + skeleton placeholder + bottom scrim.
+   Used by every card cover so remote images never cause layout shift, and so the
+   site's own badges/labels render as CSS overlays instead of relying on the JPG. */
+.media-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--surface-2);
+}
+.media-frame > img,
+.media-frame > .media-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Skeleton shimmer shown until the image paints on top of it */
+.media-skeleton {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    var(--surface-2) 30%,
+    var(--border) 50%,
+    var(--surface-2) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+@keyframes skeletonShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+/* Bottom-to-top scrim so overlaid labels stay legible over any image */
+.media-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.1) 45%,
+    transparent 70%
+  );
+}
+
+/* Inline links inside body copy: underline so color isn't the only signal (WCAG) */
+.link-inline {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--link) 45%, transparent);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 150ms ease, color 150ms ease;
+}
+.link-inline:hover {
+  color: var(--primary-hover);
+  text-decoration-color: var(--primary-hover);
+}
+
+/* Respect reduced-motion: disable pulses/shimmer/transition flourishes */
+@media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
+  .media-skeleton { animation: none; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

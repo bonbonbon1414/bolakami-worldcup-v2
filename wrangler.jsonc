@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "bolakami-worldcup",
+  "compatibility_date": "2026-06-17",
+  // Static-assets-only Worker — no `main` script. The Next.js static export
+  // (`output: "export"` → ./out) is served directly from Cloudflare's edge.
+  "assets": {
+    "directory": "./out",
+    // Export emits flat files (e.g. /jadwal.html); serve them at /jadwal.
+    "html_handling": "auto-trailing-slash",
+    // Serve Next's exported 404.html for unknown routes.
+    "not_found_handling": "404-page"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
