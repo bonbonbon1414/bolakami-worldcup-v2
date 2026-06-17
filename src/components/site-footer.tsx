@@ -14,8 +14,8 @@ function PostThumb({ post }: { post: Post }) {
           ? undefined
           : {
               background: `linear-gradient(135deg, ${
-                league?.color ?? "#10b981"
-              }, #0b0f14 120%)`,
+                league?.color ?? "#00d70d"
+              }, #1a1b33 120%)`,
             }
       }
     >

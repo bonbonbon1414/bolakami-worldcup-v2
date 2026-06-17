@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PostCard } from "@/components/post-card";
 import { KickoffCountdown } from "@/components/kickoff-countdown";
+import { LiveScores } from "@/components/live-scores";
 import { getAllPosts, type Post } from "@/lib/posts";
 import { getLeague } from "@/lib/leagues";
 import { formatDateShort } from "@/lib/format";
@@ -30,8 +31,8 @@ function HeroImage({
           className="media-fallback flex items-center justify-center px-4 text-center text-lg font-bold leading-tight text-white/95"
           style={{
             background: `linear-gradient(135deg, ${
-              league?.color ?? "#10b981"
-            } 0%, #0b0f14 120%)`,
+              league?.color ?? "#00d70d"
+            } 0%, #1a1b33 120%)`,
           }}
         >
           <span className="line-clamp-4">{post.title}</span>
@@ -220,6 +221,20 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* Today's matches — SportMonks, updated client-side via /api/livescores */}
+      <section id="skor" className="scroll-mt-24 mt-12">
+        <div className="mb-5 flex flex-wrap items-end gap-x-6 gap-y-2 border-b border-border">
+          <h2 className="flex items-center gap-2 border-b-2 border-primary pb-3 text-sm font-extrabold uppercase tracking-wider">
+            <span className="live-dot" aria-hidden />
+            Pertandingan Hari Ini
+          </h2>
+          <span className="pb-3 text-xs text-muted">
+            Piala Dunia 2026 — skor & jadwal hari ini (WIB)
+          </span>
+        </div>
+        <LiveScores />
+      </section>
 
       {/* Popular News */}
       <section id="popular" className="scroll-mt-24 mt-12">

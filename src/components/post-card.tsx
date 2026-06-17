@@ -25,7 +25,7 @@ function Cover({
         <div
           className="media-fallback flex items-center justify-center text-center text-xl font-bold leading-tight text-white/95"
           style={{
-            background: `linear-gradient(135deg, ${color ?? "#10b981"}, #0b0f14 130%)`,
+            background: `linear-gradient(135deg, ${color ?? "#00d70d"}, #1a1b33 130%)`,
           }}
         >
           <span className="px-4 line-clamp-3">{title}</span>

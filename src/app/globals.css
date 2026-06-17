@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b0f14;
-  --surface: #111821;
-  --surface-2: #1a2330;
-  --border: #243042;
-  --foreground: #e7eef7;
-  --muted: #aab8cc;
-  --primary: #10b981;
-  --primary-hover: #34d399;
+  /* Brand palette — Bolakami Brandbook §B. Surface/border/muted derived
+     from Dark Space to keep the indigo tint consistent across the ladder. */
+  --background: #1a1b33; /* Dark Space */
+  --surface: #232544;
+  --surface-2: #2e3054;
+  --border: #3c3e66;
+  --foreground: #f8fcff; /* Blinding White */
+  --muted: #a8abce;
+  --primary: #00d70d; /* Sporty Green */
+  --primary-hover: #33e23f;
   /* Brighter green tuned for inline text links on dark surfaces */
-  --link: #4ade80;
+  --link: #3df04a;
   --accent: #f59e0b;
   --danger: #ef4444;
 }
@@ -55,7 +57,7 @@ body {
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #454974;
 }
 
 /* Article prose */
@@ -123,7 +125,7 @@ body {
   font-family: var(--font-geist-mono), monospace;
 }
 .prose-article pre {
-  background: #0a0f17;
+  background: #14152a;
   border: 1px solid var(--border);
   padding: 1rem;
   border-radius: 8px;

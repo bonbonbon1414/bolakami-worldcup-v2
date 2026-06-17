@@ -48,7 +48,7 @@ const TEAM = [
     role: "Editor Utama",
     bio: "Mengulas format turnamen, profil stadion, dan matchup tim Eropa. Pengalaman 8 tahun meliput Piala Dunia & Liga Champions.",
     avatar:
-      "https://api.dicebear.com/7.x/avataaars/svg?seed=bayupratama&backgroundColor=10b981",
+      "https://api.dicebear.com/7.x/avataaars/svg?seed=bayupratama&backgroundColor=00d70d",
   },
   {
     name: "Reza Wibowo",
