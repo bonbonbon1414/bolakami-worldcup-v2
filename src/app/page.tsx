@@ -1,7 +1,66 @@
 import Link from "next/link";
-import { PostCard } from "@/components/post-card";
 import { KickoffCountdown } from "@/components/kickoff-countdown";
 import { LiveScores } from "@/components/live-scores";
+import { NewsTicker } from "@/components/news-ticker";
+import { PopularNews } from "@/components/popular-news";
+import { FaqSection, type QA } from "@/components/faq-section";
+
+const FAQ_UMUM: QA[] = [
+  {
+    q: "Kapan Piala Dunia 2026 dimulai?",
+    a: "Piala Dunia 2026 resmi dibuka pada 11 Juni 2026 dengan partai pembuka di Estadio Azteca, Meksiko, dan berakhir dengan final pada 19 Juli 2026 di MetLife Stadium, New Jersey, Amerika Serikat.",
+  },
+  {
+    q: "Negara mana saja yang menjadi tuan rumah?",
+    a: "Untuk pertama kalinya, Piala Dunia digelar di tiga negara sekaligus: Amerika Serikat (11 kota), Kanada (2 kota), dan Meksiko (3 kota), dengan total 16 stadion tuan rumah.",
+  },
+  {
+    q: "Berapa tim peserta dan bagaimana formatnya?",
+    a: "Sebanyak 48 tim akan bersaing — terbanyak dalam sejarah. Mereka dibagi ke dalam 12 grup berisi 4 tim. Dua tim teratas tiap grup plus 8 peringkat tiga terbaik melaju ke babak 32 besar. Total 104 pertandingan digelar selama 39 hari.",
+  },
+  {
+    q: "Siapa juara bertahan Piala Dunia?",
+    a: "Argentina, yang menjuarai Piala Dunia 2022 di Qatar setelah mengalahkan Prancis melalui drama adu penalti di final. Lionel Messi akhirnya mengangkat trofi Piala Dunia pertamanya.",
+  },
+  {
+    q: "Apakah Timnas Indonesia tampil di Piala Dunia 2026?",
+    a: "Indonesia saat ini berjuang di babak ketiga kualifikasi Zona Asia. Peluang lolos langsung sulit, tapi tempat di babak playoff antar-konfederasi masih terbuka dengan beberapa pertandingan tersisa.",
+  },
+  {
+    q: "Kapan undian grup Piala Dunia 2026 dilaksanakan?",
+    a: "Undian grup resmi digelar di Las Vegas pada 5 Desember 2025. Pertandingan pertama Grup A mempertemukan tuan rumah Meksiko di Estadio Azteca pada 11 Juni 2026.",
+  },
+];
+
+const FAQ_STREAMING: QA[] = [
+  {
+    q: "Apakah BOLAKAMI menyiarkan Piala Dunia 2026 secara langsung?",
+    a: "Ya. BOLAKAMI menyediakan live streaming untuk seluruh 104 pertandingan Piala Dunia 2026, lengkap dengan komentar berbahasa Indonesia, statistik real-time, dan multi-angle replay sepanjang turnamen.",
+  },
+  {
+    q: "Apakah live streaming BOLAKAMI gratis?",
+    a: "Gratis sepenuhnya untuk semua pertandingan fase grup. Babak knockout (32 besar ke atas) memerlukan akun gratis tanpa kartu kredit — cukup login dengan email atau Google.",
+  },
+  {
+    q: "Di perangkat apa saja saya bisa menonton?",
+    a: "BOLAKAMI berjalan di semua perangkat modern: HP Android & iOS lewat browser maupun aplikasi, smart TV (Android TV, Apple TV, Chromecast, AirPlay), laptop, dan tablet. Kualitas otomatis menyesuaikan kecepatan internet, dari 360p hingga 4K HDR.",
+  },
+  {
+    q: "Apakah ada highlight, replay, dan jadwal nonton ulang?",
+    a: "Highlight 5 menit tersedia 60 menit setelah peluit akhir, dan replay pertandingan penuh tersimpan selama 7 hari. Kamu juga bisa setel pengingat kickoff lewat tombol bel di setiap halaman pertandingan.",
+  },
+];
+
+// Combined FAQPage structured data (eligible for Google rich results).
+const FAQ_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [...FAQ_UMUM, ...FAQ_STREAMING].map((f) => ({
+    "@type": "Question",
+    name: f.q,
+    acceptedAnswer: { "@type": "Answer", text: f.a },
+  })),
+};
 import { getAllPosts, type Post } from "@/lib/posts";
 import { getLeague } from "@/lib/leagues";
 import { formatDateShort } from "@/lib/format";
@@ -32,7 +91,7 @@ function HeroImage({
           style={{
             background: `linear-gradient(135deg, ${
               league?.color ?? "#00d70d"
-            } 0%, #1a1b33 120%)`,
+            } 0%, #0a0a0b 120%)`,
           }}
         >
           <span className="line-clamp-4">{post.title}</span>
@@ -114,51 +173,60 @@ export default function Home() {
 
   const [big, ...rest] = posts;
   const smalls = rest.slice(0, 4);
-  // Don't repeat the hero articles in the Popular grid — surface fresh ones,
-  // falling back to the full list only if there aren't enough.
+  const tickerItems = [big, ...smalls].map((p) => ({
+    title: p.title,
+    slug: p.slug,
+  }));
+  // Pool for the Popular grid — drop the hero articles (so they don't repeat)
+  // and the heavy html/content fields (this list crosses to the client).
   const heroSlugs = new Set([big, ...smalls].map((p) => p.slug));
-  const remaining = posts.filter((p) => !heroSlugs.has(p.slug));
-  const popular = (remaining.length >= 6 ? remaining : posts).slice(0, 6);
+  const popularPool = posts
+    .filter((p) => !heroSlugs.has(p.slug))
+    .map((p) => ({ ...p, html: "", content: "" }));
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
-      {/* Hero header — BOLAKAMI brand h1 for SEO */}
-      <header className="mb-6">
-        <h1 className="text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl md:text-4xl">
-          <span className="text-primary">BOLAKAMI</span> — Live Streaming
-          Gratis <span className="text-primary">Piala Dunia 2026</span>{" "}
-          Tanpa Daftar
-        </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted sm:text-base">
-          <Link href="/" className="font-semibold text-primary hover:underline">
-            BOLAKAMI
-          </Link>{" "}
-          adalah platform <strong>nonton bola gratis</strong> khusus Piala
-          Dunia 2026 — saksikan seluruh <strong>104 pertandingan</strong>{" "}
-          live streaming gratis di BOLAKAMI dengan komentar berbahasa
-          Indonesia, kualitas HD hingga 4K, dan tanpa biaya berlangganan.
-          BOLAKAMI menyajikan{" "}
-          <Link href="/jadwal" className="link-inline">
-            jadwal lengkap
-          </Link>
-          ,{" "}
-          <Link href="/grup" className="link-inline">
-            preview per grup
-          </Link>
-          , dan{" "}
-          <Link href="/berita" className="link-inline">
-            berita terbaru
-          </Link>{" "}
-          menjelang kickoff 12 Juni 2026.
-        </p>
-        <div className="mt-5 flex flex-col gap-4">
-          <div className="flex flex-wrap items-center gap-4">
+      {/* Hero header — broadcast panel, BOLAKAMI brand h1 for SEO */}
+      <header className="hero-panel mb-8 rounded-2xl border border-border p-6 sm:p-8 md:p-10">
+        <div className="relative">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
+            <span className="live-dot" aria-hidden />
+            Live Streaming Gratis
+          </span>
+
+          <h1 className="mt-4 max-w-4xl text-3xl font-extrabold leading-[1.05] tracking-tight sm:text-4xl md:text-5xl">
+            <span className="text-primary">BOLAKAMI</span> — Live Streaming{" "}
+            <span className="text-primary">Piala Dunia 2026</span> Gratis Tanpa
+            Ribet
+          </h1>
+
+          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+            Nonton{" "}
+            <strong className="text-foreground/90">104 pertandingan</strong>{" "}
+            Piala Dunia 2026 <strong className="text-foreground/90">gratis</strong>{" "}
+            dengan komentar bahasa Indonesia — kualitas HD hingga 4K, tanpa
+            daftar. Lihat{" "}
+            <Link href="/jadwal" className="link-inline">
+              jadwal lengkap
+            </Link>
+            ,{" "}
+            <Link href="/grup" className="link-inline">
+              preview per grup
+            </Link>
+            , dan{" "}
+            <Link href="/berita" className="link-inline">
+              berita terbaru
+            </Link>{" "}
+            menjelang kickoff 11 Juni 2026.
+          </p>
+
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link
               href="https://nonton.blkmi.com"
               className="group inline-flex items-center gap-2.5 rounded-full bg-primary px-6 py-3 text-base font-extrabold text-black shadow-lg shadow-primary/20 transition-colors hover:bg-primary-hover"
             >
               <span className="live-dot" aria-hidden />
-              Nonton Live di BOLAKAMI
+              Nonton Live
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -171,46 +239,38 @@ export default function Home() {
               </svg>
             </Link>
             <Link
-              href="berita/jadwal-lengkap-piala-dunia-2026"
-              className="text-sm font-semibold text-primary hover:underline"
+              href="/jadwal"
+              className="inline-flex items-center rounded-full border border-border bg-surface-2/60 px-5 py-3 text-sm font-bold text-foreground/85 transition-colors hover:border-primary/60 hover:text-primary"
             >
-              Lihat jadwal lengkap BOLAKAMI →
+              Lihat Jadwal Lengkap
             </Link>
           </div>
-          <KickoffCountdown />
+
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-border/60 pt-5">
+            <KickoffCountdown />
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+              {[
+                { value: "48", label: "Tim" },
+                { value: "104", label: "Laga" },
+                { value: "16", label: "Stadion" },
+                { value: "39", label: "Hari" },
+              ].map((s) => (
+                <div key={s.label} className="flex items-baseline gap-1.5">
+                  <span className="text-lg font-extrabold tabular-nums text-primary">
+                    {s.value}
+                  </span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+                    {s.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </header>
 
-      {/* NEWS ribbon */}
-      <div
-        id="jadwal"
-        className="scroll-mt-24 mb-4 flex items-center justify-between gap-4 border-b border-border pb-3"
-      >
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="shrink-0 rounded-sm bg-primary px-2 py-1 text-[11px] font-extrabold uppercase tracking-wider text-black">
-            BOLAKAMI News
-          </span>
-          <span className="truncate text-sm font-medium text-foreground/85">
-            {big.title}
-          </span>
-        </div>
-        <div className="flex shrink-0 gap-1">
-          <button
-            type="button"
-            aria-label="Sebelumnya"
-            className="grid h-7 w-7 place-items-center rounded border border-border text-foreground/70 transition-colors hover:border-primary hover:text-primary"
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            aria-label="Selanjutnya"
-            className="grid h-7 w-7 place-items-center rounded border border-border text-foreground/70 transition-colors hover:border-primary hover:text-primary"
-          >
-            ›
-          </button>
-        </div>
-      </div>
+      {/* NEWS ribbon — rotating headlines */}
+      <NewsTicker items={tickerItems} />
 
       {/* Hero grid: 1 big (left) + 2x2 small (right) */}
       <div className="grid gap-3 lg:grid-cols-2">
@@ -236,26 +296,8 @@ export default function Home() {
         <LiveScores />
       </section>
 
-      {/* Popular News */}
-      <section id="popular" className="scroll-mt-24 mt-12">
-        <div className="mb-5 flex flex-wrap items-end gap-x-6 gap-y-2 border-b border-border">
-          <h2 className="border-b-2 border-primary pb-3 text-sm font-extrabold uppercase tracking-wider">
-            Popular News
-          </h2>
-          <nav className="flex flex-wrap gap-x-5 gap-y-2 pb-3 text-xs font-semibold text-muted">
-            <span className="cursor-default text-foreground hover:text-primary">All</span>
-            <span className="cursor-default hover:text-primary">Tim Favorit</span>
-            <span className="cursor-default hover:text-primary">Kuda Hitam</span>
-            <span className="cursor-default hover:text-primary">Stadion</span>
-            <span className="cursor-default hover:text-primary">Kualifikasi</span>
-          </nav>
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {popular.map((p) => (
-            <PostCard key={p.slug} post={p} />
-          ))}
-        </div>
-      </section>
+      {/* Popular News — filterable by category */}
+      <PopularNews posts={popularPool} />
 
       {/* About BOLAKAMI */}
       <section id="tentang" className="scroll-mt-24 mt-16">
@@ -344,123 +386,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section id="faq" className="scroll-mt-24 mt-16">
-        <div className="mb-5 flex flex-wrap items-end gap-x-6 gap-y-2 border-b border-border">
-          <h2 className="border-b-2 border-primary pb-3 text-sm font-extrabold uppercase tracking-wider">
-            Pertanyaan Umum
-          </h2>
-          <span className="pb-3 text-xs text-muted">
-            Hal yang sering ditanyakan tentang Piala Dunia 2026
-          </span>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-2">
-          {[
-            {
-              q: "Kapan Piala Dunia 2026 dimulai?",
-              a: "Piala Dunia 2026 resmi dibuka pada 11 Juni 2026 dengan partai pembuka di Estadio Azteca, Meksiko, dan berakhir dengan final pada 19 Juli 2026 di MetLife Stadium, New Jersey, Amerika Serikat.",
-            },
-            {
-              q: "Negara mana saja yang menjadi tuan rumah?",
-              a: "Untuk pertama kalinya, Piala Dunia digelar di tiga negara sekaligus: Amerika Serikat (11 kota), Kanada (2 kota), dan Meksiko (3 kota), dengan total 16 stadion tuan rumah.",
-            },
-            {
-              q: "Berapa tim peserta dan bagaimana formatnya?",
-              a: "Sebanyak 48 tim akan bersaing — terbanyak dalam sejarah. Mereka dibagi ke dalam 12 grup berisi 4 tim. Dua tim teratas tiap grup plus 8 peringkat tiga terbaik melaju ke babak 32 besar. Total 104 pertandingan digelar selama 39 hari.",
-            },
-            {
-              q: "Siapa juara bertahan Piala Dunia?",
-              a: "Argentina, yang menjuarai Piala Dunia 2022 di Qatar setelah mengalahkan Prancis melalui drama adu penalti di final. Lionel Messi akhirnya mengangkat trofi Piala Dunia pertamanya.",
-            },
-            {
-              q: "Apakah Timnas Indonesia tampil di Piala Dunia 2026?",
-              a: "Indonesia saat ini berjuang di babak ketiga kualifikasi Zona Asia. Peluang lolos langsung sulit, tapi tempat di babak playoff antar-konfederasi masih terbuka dengan beberapa pertandingan tersisa.",
-            },
-            {
-              q: "Kapan undian grup Piala Dunia 2026 dilaksanakan?",
-              a: "Undian grup resmi digelar di Las Vegas pada 5 Desember 2025. Pertandingan pertama Grup A mempertemukan tuan rumah Meksiko di Estadio Azteca pada 11 Juni 2026.",
-            },
-          ].map((faq) => (
-            <details
-              key={faq.q}
-              className="group rounded-xl border border-border bg-surface p-4 transition-colors hover:border-primary/40 open:border-primary/60"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
-                <h3 className="text-sm font-bold text-foreground">{faq.q}</h3>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180 group-open:text-primary"
-                  aria-hidden
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </summary>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                {faq.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      {/* Live Streaming FAQ */}
-      <section className="mt-16">
-        <div className="mb-5 flex flex-wrap items-end gap-x-6 gap-y-2 border-b border-border">
-          <h2 className="border-b-2 border-primary pb-3 text-sm font-extrabold uppercase tracking-wider">
-            FAQ Live Streaming
-          </h2>
-          <span className="pb-3 text-xs text-muted">
-            Cara nonton Piala Dunia 2026 langsung di BOLAKAMI
-          </span>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-2">
-          {[
-            {
-              q: "Apakah BOLAKAMI menyiarkan Piala Dunia 2026 secara langsung?",
-              a: "Ya. BOLAKAMI menyediakan live streaming untuk seluruh 104 pertandingan Piala Dunia 2026, lengkap dengan komentar berbahasa Indonesia, statistik real-time, dan multi-angle replay sepanjang turnamen.",
-            },
-            {
-              q: "Apakah live streaming BOLAKAMI gratis?",
-              a: "Gratis sepenuhnya untuk semua pertandingan fase grup. Babak knockout (32 besar ke atas) memerlukan akun gratis tanpa kartu kredit — cukup login dengan email atau Google.",
-            },
-            {
-              q: "Di perangkat apa saja saya bisa menonton?",
-              a: "BOLAKAMI berjalan di semua perangkat modern: HP Android & iOS lewat browser maupun aplikasi, smart TV (Android TV, Apple TV, Chromecast, AirPlay), laptop, dan tablet. Kualitas otomatis menyesuaikan kecepatan internet, dari 360p hingga 4K HDR.",
-            },
-            {
-              q: "Apakah ada highlight, replay, dan jadwal nonton ulang?",
-              a: "Highlight 5 menit tersedia 60 menit setelah peluit akhir, dan replay pertandingan penuh tersimpan selama 7 hari. Kamu juga bisa setel pengingat kickoff lewat tombol bel di setiap halaman pertandingan.",
-            },
-          ].map((faq) => (
-            <details
-              key={faq.q}
-              className="group rounded-xl border border-border bg-surface p-4 transition-colors hover:border-primary/40 open:border-primary/60"
-            >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
-                <h3 className="text-sm font-bold text-foreground">{faq.q}</h3>
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  className="h-4 w-4 shrink-0 text-muted transition-transform group-open:rotate-180 group-open:text-primary"
-                  aria-hidden
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
-              </summary>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
-                {faq.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </section>
+      {/* FAQ — structured data for rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_LD) }}
+      />
+      <FaqSection
+        id="faq"
+        eyebrow="Pertanyaan Umum"
+        subtitle="Hal yang sering ditanyakan tentang Piala Dunia 2026"
+        items={FAQ_UMUM}
+      />
+      <FaqSection
+        eyebrow="FAQ Live Streaming"
+        subtitle="Cara nonton Piala Dunia 2026 langsung di BOLAKAMI"
+        items={FAQ_STREAMING}
+      />
     </div>
   );
 }

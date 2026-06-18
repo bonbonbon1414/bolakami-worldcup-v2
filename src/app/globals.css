@@ -1,14 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand palette — Bolakami Brandbook §B. Surface/border/muted derived
-     from Dark Space to keep the indigo tint consistent across the ladder. */
-  --background: #1a1b33; /* Dark Space */
-  --surface: #232544;
-  --surface-2: #2e3054;
-  --border: #3c3e66;
+  /* Near-black neutral dark theme with Sporty Green accent. */
+  --background: #0a0a0b;
+  --surface: #141416;
+  --surface-2: #1d1d20;
+  --border: #2a2a2f;
   --foreground: #f8fcff; /* Blinding White */
-  --muted: #a8abce;
+  --muted: #9b9ba6;
   --primary: #00d70d; /* Sporty Green */
   --primary-hover: #33e23f;
   /* Brighter green tuned for inline text links on dark surfaces */
@@ -57,7 +56,7 @@ body {
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #454974;
+  background: #3a3a40;
 }
 
 /* Article prose */
@@ -125,7 +124,7 @@ body {
   font-family: var(--font-geist-mono), monospace;
 }
 .prose-article pre {
-  background: #14152a;
+  background: #101012;
   border: 1px solid var(--border);
   padding: 1rem;
   border-radius: 8px;
@@ -240,6 +239,23 @@ body {
   text-decoration-color: var(--primary-hover);
 }
 
+/* Hero panel: green glow + subtle neutral lift over the surface */
+.hero-panel {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      120% 120% at 0% 0%,
+      color-mix(in srgb, var(--primary) 18%, transparent) 0%,
+      transparent 45%
+    ),
+    radial-gradient(
+      100% 120% at 100% 0%,
+      color-mix(in srgb, var(--foreground) 6%, transparent) 0%,
+      transparent 55%
+    ),
+    var(--surface);
+}
 /* Respect reduced-motion: disable pulses/shimmer/transition flourishes */
 @media (prefers-reduced-motion: reduce) {
   .live-dot { animation: none; }

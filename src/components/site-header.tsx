@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+
+const WATCH_URL = "https://nonton.blkmi.com";
 
 const NAV = [
   { href: "/", label: "Beranda" },
@@ -25,6 +28,9 @@ function LiveDot() {
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
@@ -46,19 +52,30 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="rounded-md px-3 py-2 text-sm font-semibold text-foreground/85 transition-colors hover:bg-surface hover:text-primary"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={`relative rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                  active
+                    ? "text-primary"
+                    : "text-foreground/85 hover:bg-surface hover:text-primary"
+                }`}
+              >
+                {item.label}
+                {active ? (
+                  <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-primary" />
+                ) : null}
+              </Link>
+            );
+          })}
         </nav>
 
         <Link
-          href="https://nonton.blkmi.com"
+          href={WATCH_URL}
           className="hidden shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-extrabold text-black transition-colors hover:bg-primary-hover md:inline-flex"
         >
           <LiveDot />
@@ -99,23 +116,31 @@ export function SiteHeader() {
       {open ? (
         <div className="border-t border-border bg-background md:hidden">
           <div className="mx-auto max-w-6xl space-y-1 px-4 py-3">
-            {NAV.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-semibold text-foreground/85 hover:bg-surface hover:text-primary"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={`block rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                    active
+                      ? "bg-surface text-primary"
+                      : "text-foreground/85 hover:bg-surface hover:text-primary"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <Link
-              href="/#popular"
+              href={WATCH_URL}
               onClick={() => setOpen(false)}
               className="mt-3 flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-black hover:bg-primary-hover"
             >
               <LiveDot />
-              Nonton Live
+              Streaming Bola Gratis
             </Link>
           </div>
         </div>

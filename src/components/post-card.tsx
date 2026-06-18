@@ -3,6 +3,15 @@ import type { Post } from "@/lib/posts";
 import { formatDateShort } from "@/lib/format";
 import { getLeague } from "@/lib/leagues";
 
+function initials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 function Cover({
   title,
   color,
@@ -25,7 +34,7 @@ function Cover({
         <div
           className="media-fallback flex items-center justify-center text-center text-xl font-bold leading-tight text-white/95"
           style={{
-            background: `linear-gradient(135deg, ${color ?? "#00d70d"}, #1a1b33 130%)`,
+            background: `linear-gradient(135deg, ${color ?? "#00d70d"}, #0a0a0b 130%)`,
           }}
         >
           <span className="px-4 line-clamp-3">{title}</span>
@@ -45,7 +54,7 @@ function Cover({
 export function PostCard({ post }: { post: Post }) {
   const league = getLeague(post.category);
   return (
-    <article className="group overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-primary/60">
+    <article className="group overflow-hidden rounded-xl border border-border bg-surface transition duration-200 hover:border-primary/60 hover:shadow-lg hover:shadow-black/30">
       <Link href={`/berita/${post.slug}`} className="block">
         <Cover
           title={post.title}
@@ -71,7 +80,17 @@ export function PostCard({ post }: { post: Post }) {
         <p className="mt-2 line-clamp-2 text-sm text-muted">
           {post.description}
         </p>
-        <div className="mt-3 text-xs text-muted">Oleh {post.author}</div>
+        <div className="mt-3 flex items-center gap-2 text-xs text-muted">
+          <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary/15 text-[10px] font-bold text-primary">
+            {initials(post.author)}
+          </span>
+          <span>
+            Oleh{" "}
+            <span className="font-medium text-foreground/80">
+              {post.author}
+            </span>
+          </span>
+        </div>
       </div>
     </article>
   );

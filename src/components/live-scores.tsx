@@ -76,6 +76,49 @@ function statusText(m: Match): string {
   return m.stateName || m.state;
 }
 
+// --- icons ---
+
+function TrophyIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+    </svg>
+  );
+}
+
+function CalendarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M8 2v4M16 2v4" />
+      <rect width="18" height="18" x="3" y="4" rx="2" />
+      <path d="M3 10h18" />
+    </svg>
+  );
+}
+
 // --- small presentational pieces ---
 
 function Crest({ side, align }: { side: Side; align: "left" | "right" }) {
@@ -252,8 +295,8 @@ export function LiveScores() {
 
       {/* competition group header */}
       <div className="flex items-center gap-2 border-b border-border bg-surface-2/30 px-3 py-2">
-        <span className="grid h-6 w-6 place-items-center rounded-full bg-primary/15 text-sm">
-          🏆
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-primary/15 text-primary">
+          <TrophyIcon className="h-3.5 w-3.5" />
         </span>
         <span className="text-sm font-extrabold">World Cup</span>
         <span className="ml-auto text-xs text-muted">Piala Dunia 2026</span>
@@ -272,8 +315,8 @@ export function LiveScores() {
         </div>
       ) : matches.length === 0 ? (
         <div className="p-10 text-center">
-          <div className="text-3xl">⚽</div>
-          <p className="mt-2 font-semibold text-foreground">
+          <CalendarIcon className="mx-auto h-9 w-9 text-muted" />
+          <p className="mt-3 font-semibold text-foreground">
             Tidak ada pertandingan Piala Dunia 2026 hari ini.
           </p>
           <p className="mt-1 text-sm text-muted">

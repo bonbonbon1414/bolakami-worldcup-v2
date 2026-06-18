@@ -15,7 +15,7 @@ function PostThumb({ post }: { post: Post }) {
           : {
               background: `linear-gradient(135deg, ${
                 league?.color ?? "#00d70d"
-              }, #1a1b33 120%)`,
+              }, #0a0a0b 120%)`,
             }
       }
     >
@@ -281,11 +281,16 @@ export function SiteFooter() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-4 text-xs text-muted md:flex-row">
           <p>© {year} Bolakami Berita. All Rights Reserved.</p>
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link href="/tentang" className="hover:text-primary">About</Link>
-            <Link href="/tentang" className="hover:text-primary">Author</Link>
-            <Link href="/tentang" className="hover:text-primary">Contact Us</Link>
-            <Link href="/tentang" className="hover:text-primary">Disclaimer</Link>
-            <Link href="/tentang" className="hover:text-primary">Privacy Policy</Link>
+            <Link href="/tentang" className="hover:text-primary">Tentang</Link>
+            <Link href="/jadwal" className="hover:text-primary">Jadwal</Link>
+            <Link href="/grup" className="hover:text-primary">Grup</Link>
+            <Link href="/berita" className="hover:text-primary">Berita</Link>
+            <a
+              href="mailto:support@bolakami.click"
+              className="hover:text-primary"
+            >
+              Kontak
+            </a>
             <Link href="/sitemap.xml" className="hover:text-primary">Sitemap</Link>
           </nav>
         </div>

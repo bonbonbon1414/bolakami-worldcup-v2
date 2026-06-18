@@ -37,7 +37,7 @@ const geistMono = Geist_Mono({
 });
 
 const SITE_TITLE =
-  "Nonton Bola Gratis Piala Dunia 2026 — HD Tanpa Daftar | Bolakami";
+  "Bolakami | Berita Bola Terbaru dan Jadwal Piala Dunia Hari Ini";
 const SITE_DESCRIPTION =
   "Saksikan seluruh laga Piala Dunia 2026 gratis di Bolakami: komentar Indonesia, multi-angle, highlight & replay 7 hari. Streaming lancar di semua perangkat.";
 
@@ -55,6 +55,8 @@ export const metadata: Metadata = {
   category: "Sports",
   keywords: [
     "live streaming piala dunia 2026",
+    "live streaming bola",
+    "nonton bola",
     "bolakami apk",
     "nonton bola gratis",
     "jadwal piala dunia 2026",
@@ -140,7 +142,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1a1b33",
+  themeColor: "#0a0a0b",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
