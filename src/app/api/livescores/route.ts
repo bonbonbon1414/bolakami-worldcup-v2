@@ -6,8 +6,22 @@
  * the browser. Defaults to today (Asia/Jakarta) when `date` is missing/invalid.
  */
 
-// Runs per-request (reads process.env + a query param) — never prerendered.
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+
+// Runs per-request (reads env + a query param) — never prerendered.
 export const dynamic = "force-dynamic";
+
+// On Cloudflare, vars/secrets live on the Worker env (getCloudflareContext);
+// locally (`next dev`) they come from `.env` via process.env. Try both.
+function readEnv(key: string): string | undefined {
+  try {
+    const v = (getCloudflareContext().env as Record<string, unknown>)[key];
+    if (typeof v === "string" && v) return v;
+  } catch {
+    // not in a Cloudflare context (e.g. plain `next dev`)
+  }
+  return process.env[key];
+}
 
 const SPORTMONKS_BASE = "https://api.sportmonks.com/v3/football";
 const UPSTREAM_REVALIDATE_SECONDS = 20;
@@ -28,14 +42,14 @@ const LIVE_STATES = new Set([
 ]);
 
 export async function GET(request: Request): Promise<Response> {
-  const token = process.env.SPORTMONKS_API_TOKEN;
+  const token = readEnv("SPORTMONKS_API_TOKEN");
   if (!token) {
     return Response.json(
       { error: "Server is missing SPORTMONKS_API_TOKEN" },
       { status: 500 },
     );
   }
-  const leagueId = process.env.WORLD_CUP_LEAGUE_ID ?? "732";
+  const leagueId = readEnv("WORLD_CUP_LEAGUE_ID") ?? "732";
 
   const dateParam = new URL(request.url).searchParams.get("date");
   const date = /^\d{4}-\d{2}-\d{2}$/.test(dateParam ?? "")

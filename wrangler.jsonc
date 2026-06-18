@@ -12,8 +12,10 @@
     { "binding": "WORKER_SELF_REFERENCE", "service": "bolakami-worldcup-v2" }
   ],
   "vars": {
-    // SportMonks World Cup league id. The API token is a SECRET — set it with
-    // `wrangler secret put SPORTMONKS_API_TOKEN` (do not put it here).
+    // NOTE: SPORTMONKS_API_TOKEN is a plaintext var here (committed to the repo).
+    // Prefer a secret (`wrangler secret put SPORTMONKS_API_TOKEN`) and rotate
+    // this token when you can.
+    "SPORTMONKS_API_TOKEN": "5jqNzMy8AAGC9HVsE7HPcGqaBiMM8u96tOJJNMnzhFAcxjUYGjBTXkWLtwEA",
     "WORLD_CUP_LEAGUE_ID": "732"
   },
   "observability": { "enabled": true }
