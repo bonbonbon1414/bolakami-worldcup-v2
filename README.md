@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bolakami — World Cup 2026
 
-## Getting Started
+A Next.js (App Router) site for Piala Dunia 2026: news/preview articles, schedule
+by group, and **live scores** powered by the SportMonks API. Indonesian-language,
+dark "broadcast" theme, deployed on **Cloudflare Workers** via OpenNext.
 
-First, run the development server:
+## Tech stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 16** (App Router, React 19, React Compiler)
+- **Tailwind CSS v4**
+- **MDX content** parsed with `gray-matter` + `remark` (no DB)
+- **SportMonks** football API for live scores (server-side proxy)
+- **Cloudflare Workers** via [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare)
+- Self-hosted **Mont** font (`next/font/local`)
+
+## Project structure
+
+```text
+content/posts/        # article content as .mdx (filename = URL slug)
+src/app/              # routes: /, /jadwal, /grup, /berita, /berita/[slug], /tentang
+src/app/api/livescores/route.ts   # SportMonks proxy (reads SPORTMONKS_API_TOKEN)
+src/app/sitemap.ts, robots.ts     # generated /sitemap.xml and /robots.txt
+src/components/       # header, footer, cards, live scores, FAQ, etc.
+src/lib/              # posts (MDX loader), leagues, date format, site config
+public/fonts/Mont/    # self-hosted font files
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Getting started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+> Note: the `/api/livescores` route needs `SPORTMONKS_API_TOKEN`. Copy
+> `.env.example` to `.env` and fill it in. Without it the live-score section
+> shows an empty state (the rest of the site works fine).
 
-To learn more about Next.js, take a look at the following resources:
+## Environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SPORTMONKS_API_TOKEN` | yes | SportMonks API token (server-side only — never exposed to the client) |
+| `WORLD_CUP_LEAGUE_ID` | no | SportMonks league id for the World Cup (default `732`) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Local dev (`next dev`):** read from `.env` / `.env.local`.
+- **Local Workers preview (`npm run preview`):** read from `.dev.vars`.
+- **Production (Cloudflare):** `WORLD_CUP_LEAGUE_ID` is set in `wrangler.jsonc`;
+  the token is a secret — `npx wrangler secret put SPORTMONKS_API_TOKEN`.
 
-## Deploy on Vercel
+`SITE_URL` (canonical domain, used by metadata + sitemap + robots) lives in
+`src/lib/site.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Adding an article
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a file in `content/posts/`, e.g. `tim-a-vs-tim-b-grup-x-piala-dunia-2026.mdx`.
+The filename becomes the slug. Frontmatter:
+
+```yaml
+---
+title: "Preview Grup X: Tim A vs Tim B, ..."
+description: "..."            # SEO meta description
+date: "2026-05-20"           # ISO date
+author: "Nama Penulis"
+category: "piala-dunia"
+cover: "https://.../cover.jpg" # optional — omit for the gradient fallback
+tags: ["tim-a", "tim-b", "grup-x", "piala-dunia"]
+featured: true                # optional — surfaces in "Pilihan Editor"
+---
+```
+
+Posts auto-appear in Berita, the matching Jadwal/Grup section (via the `grup-*`
+tag), the homepage Popular filter, and the sitemap. No rebuild config needed.
+
+## Scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Next.js dev server |
+| `npm run build` | Next.js production build |
+| `npm run start` | Run the Node production build locally |
+| `npm run lint` | ESLint |
+| `npm run preview` | Build with OpenNext + run the Worker locally (workerd) |
+| `npm run deploy` | Build with OpenNext + deploy to Cloudflare |
+
+## Deploy to Cloudflare
+
+```bash
+npx wrangler login                            # one-time
+npx wrangler secret put SPORTMONKS_API_TOKEN  # set the token as a secret
+npm run deploy
+```
+
+Config: [`wrangler.jsonc`](wrangler.jsonc) + [`open-next.config.ts`](open-next.config.ts).
+After the first deploy, attach the custom domain (`developers-fun.com`) to the
+Worker in the Cloudflare dashboard.
