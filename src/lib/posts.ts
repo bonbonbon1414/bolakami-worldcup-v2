@@ -1,9 +1,7 @@
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
-import { remark } from "remark";
-import html from "remark-html";
-import readingTime from "reading-time";
+// Posts are read from the filesystem at BUILD time by scripts/gen-posts.mjs and
+// written to posts.generated.json. We import that bundle here so the app never
+// touches the filesystem at runtime (Cloudflare Workers have no fs).
+import postsData from "./posts.generated.json";
 
 export type PostFrontmatter = {
   title: string;
@@ -23,55 +21,33 @@ export type Post = PostFrontmatter & {
   readMinutes: number;
 };
 
-const POSTS_DIR = path.join(process.cwd(), "content", "posts");
-
-function readPostFile(filename: string): Post {
-  const slug = filename.replace(/\.mdx?$/, "");
-  const fullPath = path.join(POSTS_DIR, filename);
-  const raw = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(raw);
-  const fm = data as PostFrontmatter;
-  const renderedHtml = remark().use(html).processSync(content).toString();
-  const stats = readingTime(content);
-  return {
-    ...fm,
-    slug,
-    content,
-    html: renderedHtml,
-    readMinutes: Math.max(1, Math.round(stats.minutes)),
-  };
-}
+// Already sorted newest-first by the generator.
+const ALL_POSTS = postsData as Post[];
 
 export function getAllPosts(): Post[] {
-  if (!fs.existsSync(POSTS_DIR)) return [];
-  const files = fs
-    .readdirSync(POSTS_DIR)
-    .filter((f) => /\.mdx?$/.test(f));
-  return files
-    .map(readPostFile)
-    .sort((a, b) => +new Date(b.date) - +new Date(a.date));
+  return ALL_POSTS;
 }
 
 export function getPostSlugs(): string[] {
-  return getAllPosts().map((p) => p.slug);
+  return ALL_POSTS.map((p) => p.slug);
 }
 
 export function getPost(slug: string): Post | undefined {
-  return getAllPosts().find((p) => p.slug === slug);
+  return ALL_POSTS.find((p) => p.slug === slug);
 }
 
 export function getFeaturedPosts(): Post[] {
-  return getAllPosts().filter((p) => p.featured);
+  return ALL_POSTS.filter((p) => p.featured);
 }
 
 export function getPostsByCategory(categorySlug: string): Post[] {
-  return getAllPosts().filter((p) => p.category === categorySlug);
+  return ALL_POSTS.filter((p) => p.category === categorySlug);
 }
 
 export function getRelatedPosts(currentSlug: string, limit = 3): Post[] {
   const current = getPost(currentSlug);
   if (!current) return [];
-  return getAllPosts()
-    .filter((p) => p.slug !== currentSlug && p.category === current.category)
-    .slice(0, limit);
+  return ALL_POSTS.filter(
+    (p) => p.slug !== currentSlug && p.category === current.category,
+  ).slice(0, limit);
 }

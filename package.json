@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "gen:posts": "node scripts/gen-posts.mjs",
+    "predev": "node scripts/gen-posts.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/gen-posts.mjs",
     "build": "opennextjs-cloudflare build",
     "build:next": "next build",
     "start": "next start",
