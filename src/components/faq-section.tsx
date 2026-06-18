@@ -1,7 +1,8 @@
 export type QA = { q: string; a: string };
 
-// Native <details> accordion — works without JS, keyboard-accessible. The
-// chevron sits in a pill that fills green and flips when the item is open.
+// Flush divider list — borderless rows split by hairlines, full width. Native
+// <details> (works without JS, keyboard-accessible). The + collapses to a − when
+// the row is open.
 export function FaqSection({
   eyebrow,
   subtitle,
@@ -15,37 +16,30 @@ export function FaqSection({
 }) {
   return (
     <section id={id} className="scroll-mt-24 mt-16">
-      <div className="mb-5 flex flex-wrap items-end gap-x-6 gap-y-2 border-b border-border">
+      <div className="mb-2 flex flex-wrap items-end gap-x-6 gap-y-2 border-b border-border">
         <h2 className="border-b-2 border-primary pb-3 text-sm font-extrabold uppercase tracking-wider">
           {eyebrow}
         </h2>
         <span className="pb-3 text-xs text-muted">{subtitle}</span>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-2">
+      <div className="divide-y divide-border">
         {items.map((faq) => (
-          <details
-            key={faq.q}
-            className="group rounded-xl border border-border bg-surface transition-colors hover:border-primary/40 open:border-primary/50 open:bg-surface-2/30"
-          >
-            <summary className="flex cursor-pointer list-none items-center gap-3 p-4 [&::-webkit-details-marker]:hidden">
-              <h3 className="flex-1 text-sm font-bold text-foreground">
+          <details key={faq.q} className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-md py-4 outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary [&::-webkit-details-marker]:hidden">
+              <h3 className="text-base font-bold text-foreground transition-colors group-hover:text-primary group-open:text-primary">
                 {faq.q}
               </h3>
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-border text-muted transition-colors group-open:border-primary group-open:bg-primary group-open:text-black">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className="h-4 w-4 transition-transform duration-200 group-open:rotate-180"
-                  aria-hidden
-                >
-                  <path d="M6 9l6 6 6-6" />
-                </svg>
+              {/* plus → minus toggle */}
+              <span
+                className="relative h-4 w-4 shrink-0 text-muted transition-colors group-hover:text-primary group-open:text-primary"
+                aria-hidden
+              >
+                <span className="absolute left-0 top-1/2 h-0.5 w-4 -translate-y-1/2 rounded-full bg-current" />
+                <span className="absolute left-1/2 top-0 h-4 w-0.5 -translate-x-1/2 rounded-full bg-current transition-transform duration-200 group-open:scale-y-0" />
               </span>
             </summary>
-            <p className="border-t border-border/60 px-4 py-3.5 text-sm leading-relaxed text-muted">
+            <p className="max-w-3xl pb-5 text-sm leading-relaxed text-muted">
               {faq.a}
             </p>
           </details>

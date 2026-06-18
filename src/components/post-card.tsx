@@ -54,8 +54,11 @@ function Cover({
 export function PostCard({ post }: { post: Post }) {
   const league = getLeague(post.category);
   return (
-    <article className="group overflow-hidden rounded-xl border border-border bg-surface transition duration-200 hover:border-primary/60 hover:shadow-lg hover:shadow-black/30">
-      <Link href={`/berita/${post.slug}`} className="block">
+    <article className="group overflow-hidden rounded-xl border border-border bg-surface transition duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-lg hover:shadow-black/30">
+      <Link
+        href={`/berita/${post.slug}`}
+        className="block rounded-t-xl outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary"
+      >
         <Cover
           title={post.title}
           color={league?.color}
@@ -72,7 +75,7 @@ export function PostCard({ post }: { post: Post }) {
         <h3 className="text-base font-semibold leading-snug">
           <Link
             href={`/berita/${post.slug}`}
-            className="transition-colors group-hover:text-primary"
+            className="rounded outline-none transition-colors group-hover:text-primary focus-visible:text-primary focus-visible:underline"
           >
             {post.title}
           </Link>
