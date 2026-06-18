@@ -1,4 +1,4 @@
-export const SITE_URL = "https://bolakami.click";
+export const SITE_URL = "https://developers-fun.com";
 export const SITE_NAME = "Bolakami";
 export const SITE_EMAIL = "support@bolakami.click";
 export const LOGO_URL =

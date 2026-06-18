@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 const WATCH_URL = "https://nonton.blkmi.com";
+const LOGO_URL =
+  "https://pub-152057235af540e0af1635a3863a9fba.r2.dev/Profile-Bolakami.jpg";
 
 const NAV = [
   { href: "/", label: "Beranda" },
@@ -13,9 +15,6 @@ const NAV = [
   { href: "/berita", label: "Berita" },
   { href: "/tentang", label: "Tentang" },
 ];
-
-const LOGO_URL =
-  "https://pub-152057235af540e0af1635a3863a9fba.r2.dev/logo-bolakami-BZH4nO91.png";
 
 function LiveDot() {
   return (
@@ -33,11 +32,12 @@ export function SiteHeader() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4">
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-4">
+      {/* Floating pill bar */}
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 rounded-2xl border border-border bg-surface/80 px-3 shadow-lg shadow-black/40 backdrop-blur-md sm:px-4">
         <Link
           href="/"
-          className="flex shrink-0 items-center"
+          className="flex shrink-0 items-center gap-2.5 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-primary"
           onClick={() => setOpen(false)}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -47,8 +47,11 @@ export function SiteHeader() {
             loading="eager"
             decoding="async"
             fetchPriority="high"
-            className="h-9 w-auto"
+            className="h-8 w-8 rounded-full object-cover"
           />
+          <span className="text-lg font-extrabold tracking-tight text-foreground">
+            BOLAKAMI
+          </span>
         </Link>
 
         <nav className="hidden flex-1 items-center justify-center gap-1 md:flex">
@@ -59,16 +62,13 @@ export function SiteHeader() {
                 key={item.label}
                 href={item.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                className={`rounded-full px-3.5 py-1.5 text-sm font-semibold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary ${
                   active
-                    ? "text-primary"
-                    : "text-foreground/85 hover:bg-surface hover:text-primary"
+                    ? "bg-primary/15 text-primary"
+                    : "text-foreground/80 hover:bg-surface-2 hover:text-foreground"
                 }`}
               >
                 {item.label}
-                {active ? (
-                  <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-primary" />
-                ) : null}
               </Link>
             );
           })}
@@ -76,7 +76,7 @@ export function SiteHeader() {
 
         <Link
           href={WATCH_URL}
-          className="hidden shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-extrabold text-black transition-colors hover:bg-primary-hover md:inline-flex"
+          className="hidden shrink-0 items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-extrabold text-black outline-none transition-colors hover:bg-primary-hover focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface md:inline-flex"
         >
           <LiveDot />
           Streaming Bola Gratis
@@ -87,7 +87,7 @@ export function SiteHeader() {
           aria-label={open ? "Tutup menu" : "Buka menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
-          className="rounded-md border border-border p-2 text-foreground/80 transition-colors hover:border-primary/60 hover:text-primary md:hidden"
+          className="grid h-10 w-10 place-items-center rounded-lg border border-border text-foreground/80 outline-none transition-colors hover:border-primary/60 hover:text-primary focus-visible:ring-2 focus-visible:ring-primary md:hidden"
         >
           {open ? (
             <svg
@@ -113,36 +113,35 @@ export function SiteHeader() {
         </button>
       </div>
 
+      {/* Floating mobile menu */}
       {open ? (
-        <div className="border-t border-border bg-background md:hidden">
-          <div className="mx-auto max-w-6xl space-y-1 px-4 py-3">
-            {NAV.map((item) => {
-              const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  aria-current={active ? "page" : undefined}
-                  className={`block rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-                    active
-                      ? "bg-surface text-primary"
-                      : "text-foreground/85 hover:bg-surface hover:text-primary"
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            <Link
-              href={WATCH_URL}
-              onClick={() => setOpen(false)}
-              className="mt-3 flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-black hover:bg-primary-hover"
-            >
-              <LiveDot />
-              Streaming Bola Gratis
-            </Link>
-          </div>
+        <div className="mx-auto mt-2 max-w-6xl rounded-2xl border border-border bg-surface/95 p-2 shadow-lg shadow-black/40 backdrop-blur-md md:hidden">
+          {NAV.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                aria-current={active ? "page" : undefined}
+                className={`block rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+                  active
+                    ? "bg-primary/15 text-primary"
+                    : "text-foreground/85 hover:bg-surface-2 hover:text-foreground"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+          <Link
+            href={WATCH_URL}
+            onClick={() => setOpen(false)}
+            className="mt-2 flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-extrabold text-black hover:bg-primary-hover"
+          >
+            <LiveDot />
+            Streaming Bola Gratis
+          </Link>
         </div>
       ) : null}
     </header>

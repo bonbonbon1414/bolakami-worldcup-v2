@@ -5,7 +5,7 @@ import { formatDateShort } from "@/lib/format";
 
 const WATCH_URL = "https://nonton.blkmi.com";
 const LOGO_URL =
-  "https://pub-152057235af540e0af1635a3863a9fba.r2.dev/logo-bolakami-BZH4nO91.png";
+  "https://pub-152057235af540e0af1635a3863a9fba.r2.dev/Profile-Bolakami.jpg";
 
 const NAV_LINKS = [
   { href: "/", label: "Beranda" },
@@ -144,14 +144,19 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-12">
           {/* Brand */}
           <div className="lg:col-span-5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={LOGO_URL}
-              alt="BolaKami"
-              loading="lazy"
-              decoding="async"
-              className="h-11 w-auto"
-            />
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={LOGO_URL}
+                alt="BolaKami"
+                loading="lazy"
+                decoding="async"
+                className="h-11 w-11 rounded-full object-cover"
+              />
+              <span className="text-2xl font-extrabold tracking-tight text-foreground">
+                BOLAKAMI
+              </span>
+            </div>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-muted">
               <span className="font-semibold text-primary">BOLAKAMI</span>{" "}
               adalah platform live streaming gratis khusus Piala Dunia 2026 —
@@ -165,12 +170,6 @@ export function SiteFooter() {
               <span className="live-dot" aria-hidden />
               Streaming Bola Gratis
             </Link>
-            <p className="mt-5 text-sm text-muted">
-              Hubungi kami:{" "}
-              <a href="mailto:support@bolakami.click" className="link-inline">
-                support@bolakami.click
-              </a>
-            </p>
           </div>
 
           {/* Explore */}

@@ -28,20 +28,31 @@ function SectionHeader({
   label,
   count,
   id,
+  badge,
 }: {
   label: string;
   count: number;
   id?: string;
+  badge?: string;
 }) {
   return (
     <div
       id={id}
-      className="mb-5 flex scroll-mt-24 items-end justify-between gap-4 border-b border-border"
+      className="mb-5 flex scroll-mt-24 items-center justify-between gap-4 border-b border-border pb-3"
     >
-      <h2 className="border-b-2 border-primary pb-3 text-sm font-extrabold uppercase tracking-wider">
-        {label}
-      </h2>
-      <span className="pb-3 text-xs text-muted">{count} artikel</span>
+      <div className="flex items-center gap-3">
+        {badge ? (
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/15 text-base font-extrabold text-primary">
+            {badge}
+          </span>
+        ) : (
+          <span className="h-6 w-1 shrink-0 rounded-full bg-primary" aria-hidden />
+        )}
+        <h2 className="text-lg font-extrabold tracking-tight">{label}</h2>
+      </div>
+      <span className="shrink-0 rounded-full bg-surface-2 px-2.5 py-1 text-xs font-semibold text-muted">
+        {count} artikel
+      </span>
     </div>
   );
 }
@@ -74,8 +85,11 @@ export default function JadwalPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <header className="mb-10">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+      <header className="mb-10 border-b border-border pb-8">
+        <span className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary">
+          Jadwal Lengkap
+        </span>
+        <h1 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl">
           Jadwal Pertandingan Piala Dunia 2026
         </h1>
         <p className="mt-3 max-w-2xl text-muted">
@@ -92,6 +106,7 @@ export default function JadwalPage() {
               label={g.label}
               count={g.posts.length}
               id={g.tag}
+              badge={g.label.replace("Grup ", "")}
             />
             <PostGrid posts={g.posts} />
           </section>

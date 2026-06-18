@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bolakami-worldcup",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-06-18",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    { "binding": "WORKER_SELF_REFERENCE", "service": "bolakami-worldcup" }
+  ],
+  "vars": {
+    // SportMonks World Cup league id. The API token is a SECRET — set it with
+    // `wrangler secret put SPORTMONKS_API_TOKEN` (do not put it here).
+    "WORLD_CUP_LEAGUE_ID": "732"
+  },
+  "observability": { "enabled": true }
+}

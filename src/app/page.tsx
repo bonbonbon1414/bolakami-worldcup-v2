@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { KickoffCountdown } from "@/components/kickoff-countdown";
 import { LiveScores } from "@/components/live-scores";
 import { NewsTicker } from "@/components/news-ticker";
 import { PopularNews } from "@/components/popular-news";
@@ -247,7 +246,6 @@ export default function Home() {
           </div>
 
           <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4 border-t border-border/60 pt-5">
-            <KickoffCountdown />
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
               {[
                 { value: "48", label: "Tim" },
