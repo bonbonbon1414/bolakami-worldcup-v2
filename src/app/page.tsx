@@ -3,6 +3,7 @@ import { LiveScores } from "@/components/live-scores";
 import { NewsTicker } from "@/components/news-ticker";
 import { PopularNews } from "@/components/popular-news";
 import { FaqSection, type QA } from "@/components/faq-section";
+import { Testimonials } from "@/components/testimonials";
 
 const FAQ_UMUM: QA[] = [
   {
@@ -383,6 +384,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Customer reviews */}
+      <Testimonials />
 
       {/* FAQ — structured data for rich results */}
       <script
