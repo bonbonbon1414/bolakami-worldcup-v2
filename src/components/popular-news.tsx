@@ -14,6 +14,11 @@ const FILTERS = [
     test: (p: Post) => !!p.tags?.some((t) => t.startsWith("grup-")),
   },
   {
+    key: "16-besar",
+    label: "16 Besar",
+    test: (p: Post) => !!p.tags?.includes("16-besar"),
+  },
+  {
     key: "kuda-hitam",
     label: "Kuda Hitam",
     test: (p: Post) => !!p.tags?.includes("kuda-hitam"),
